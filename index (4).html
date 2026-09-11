@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aakarsh Mishra — Security Researcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --base:    #0A0F1E;
+      --surface: #121828;
+      --panel:   #1A2240;
+      --border:  #1E2D4A;
+      --text:    #C8D4E8;
+      --muted:   #5A7090;
+      --white:   #E8EDF5;
+      --accent:  #4FC3F7;
+      --teal:    #64FFDA;
+      --mono:    'JetBrains Mono', monospace;
+      --sans:    'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--base);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ─────────────────────────────── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ── Nav ─────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(10, 15, 30, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── Hero ────────────────────────────────── */
+    #hero {
+      padding: 140px 0 90px;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: var(--mono);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--text);
+      max-width: 580px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    .hero-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 52px;
+    }
+
+    .contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 12px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Stat block ──────────────────────────── */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 24px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── Sections ────────────────────────────── */
+    section {
+      padding: 72px 0;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-marker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .section-marker::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── About ───────────────────────────────── */
+    .about-text p {
+      color: var(--text);
+      font-size: 15.5px;
+      line-height: 1.75;
+      max-width: 660px;
+      margin-bottom: 14px;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+
+    /* ── Disclosure orgs ─────────────────────── */
+    .disclosure-intro {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 28px;
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .org-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 10px;
+    }
+
+    .org-chip {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      background: var(--surface);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .org-chip:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .org-chip.highlight {
+      border-color: #2A4060;
+      color: var(--accent);
+    }
+
+    .disclosure-note {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Proof of Work ───────────────────────── */
+    .proof-intro {
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 32px;
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .proof-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .proof-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .proof-thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      background: var(--panel);
+    }
+
+    .proof-label {
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .proof-label strong {
+      display: block;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+
+    /* ── Lightbox ────────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(5, 8, 18, 0.93);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      font-family: var(--mono);
+      font-size: 20px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .lightbox-close:hover { color: var(--white); }
+
+    .lightbox-caption {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── Experience ──────────────────────────── */
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 0 28px;
+    }
+
+    .exp-meta {
+      padding-top: 2px;
+    }
+
+    .exp-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .exp-company {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--teal);
+      margin-top: 4px;
+    }
+
+    .exp-role {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .exp-bullets li {
+      font-size: 14px;
+      color: var(--text);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .exp-bullets li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+    }
+
+    /* ── Skills ──────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 5px 10px;
+    }
+
+    /* ── Certs ───────────────────────────────── */
+    .cert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .cert-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--base);
+      background: var(--accent);
+      border-radius: 3px;
+      padding: 4px 8px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .cert-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+
+    .cert-issuer {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Education ───────────────────────────── */
+    .edu-item {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .edu-item:last-child { border-bottom: none; }
+
+    .edu-degree {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .edu-school {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .edu-year {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Footer ──────────────────────────────── */
+    footer {
+      padding: 40px 0;
+      text-align: left;
+    }
+
+    .footer-line {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-line a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ──────────────────────────── */
+    @media (max-width: 600px) {
+      .exp-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-row {
+        flex-direction: column;
+      }
+      .stat {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .stat:last-child { border-bottom: none; }
+
+      .nav-links { display: none; }
+
+      .proof-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Lightbox ─────────────────────────────── -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  <span class="lightbox-caption" id="lightbox-caption"></span>
+</div>
+
+<!-- ── Nav ──────────────────────────────────── -->
+<nav>
+  <div class="inner">
+    <span class="nav-name">aakarsh.mishra</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#disclosure">Disclosure</a></li>
+      <li><a href="#proof">Proof</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#open-to">Open To</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────── -->
+<div class="container">
+  <section id="hero" style="padding-bottom: 72px;">
+    <p class="hero-tag">// penetration tester &amp; security researcher</p>
+    <h1>Aakarsh Mishra</h1>
+    <p class="hero-sub">
+      Security researcher and penetration tester with documented vulnerability disclosures across 40+ organizations worldwide — spanning government agencies, defense contractors, financial platforms, and consumer tech. Seeking full-time offensive security roles from 2027.
+    </p>
+
+    <div class="hero-contacts">
+      <a class="contact-pill" href="mailto:imaakarsh21@gmail.com">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        imaakarsh21@gmail.com
+      </a>
+      <a class="contact-pill" href="https://linkedin.com/in/aakarshmishra" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        linkedin.com/in/aakarshmishra
+      </a>
+      <span class="contact-pill">+91 6265987833</span>
+      <span class="contact-pill">Bhopal, IN</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-num">40+</div>
+        <div class="stat-label">organizations secured through responsible disclosure</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">penetration testing internships completed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">industry certifications held</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── About ─────────────────────────────────── -->
+<div class="container">
+  <section id="about">
+    <div class="section-marker">
+      <span class="section-title">About</span>
+    </div>
+    <div class="about-text">
+      <p>
+        I'm an independent security researcher and penetration tester focused on offensive security — web applications, APIs, and network-layer attack surfaces. I find real vulnerabilities in production systems and report them responsibly. My target environments span government agencies, defense contractors, EU institutions, healthcare infrastructure, financial platforms, and consumer tech.
+      </p>
+      <p>
+        The disclosure portfolio covers 40+ organizations with formal recognition from NASA, NCIIPC (Government of India), CERT-EU, Thales Group, Samsung, Electronic Arts, and others. The breadth is deliberate: adapting methodology to a NASA VDP, a pharma CVD program, and a fintech bug bounty requires reading different threat models and scoping constraints — not just running the same tool chain everywhere.
+      </p>
+      <p>
+        I've completed two penetration testing internships, hold the CAP and CNSP from The SecOps Group, and supplement practical work with CTF competition to sharpen fundamentals. I'm a final-year B.Tech student at LNCT Bhopal (graduating 2027), currently pursuing OSCP and targeting full-time penetration testing roles — client-facing VAPT, red team support, or product security at a company with a real attack surface.
+      </p>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Disclosure ─────────────────────────────── -->
+<div class="container">
+  <section id="disclosure">
+    <div class="section-marker">
+      <span class="section-title">Responsible Disclosure</span>
+    </div>
+    <p class="disclosure-intro">
+      Vulnerabilities independently discovered and reported through responsible disclosure channels. Acknowledgements include letters of appreciation, Hall of Fame listings, and monetary rewards.
+    </p>
+
+    <div class="org-grid">
+      <div class="org-chip highlight">NASA</div>
+      <div class="org-chip highlight">NCIIPC</div>
+      <div class="org-chip highlight">CERT-EU</div>
+      <div class="org-chip highlight">Samsung</div>
+      <div class="org-chip highlight">Electronic Arts</div>
+      <div class="org-chip highlight">Thales Group</div>
+      <div class="org-chip highlight">INDmoney</div>
+      <div class="org-chip highlight">ClearTax</div>
+      <div class="org-chip highlight">DJI</div>
+      <div class="org-chip">Bayer</div>
+      <div class="org-chip">CUNY</div>
+      <div class="org-chip">EMBL-EBI</div>
+      <div class="org-chip">Pirelli</div>
+      <div class="org-chip">State of California</div>
+      <div class="org-chip">State of Maryland</div>
+      <div class="org-chip">+ 25 others</div>
+    </div>
+
+    <p class="disclosure-note">Highlighted organizations provided formal written recognition or monetary reward.</p>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Proof of Work ──────────────────────────── -->
+<div class="container">
+  <section id="proof">
+    <div class="section-marker">
+      <span class="section-title">Proof of Work</span>
+    </div>
+    <p class="proof-intro">
+      Primary source evidence — letters of appreciation, Hall of Fame listings, and bug bounty acknowledgements. Click any image to view full size.
+    </p>
+
+    <div class="proof-grid">
+
+      <div class="proof-card" onclick="openLightbox('proof_nasa.jpg', 'NASA — Letter of Appreciation, Oct 2025')">
+        <img class="proof-thumb" src="proof_nasa.jpg" alt="NASA Letter of Appreciation" />
+        <div class="proof-label">
+          <strong>NASA</strong>
+          Letter of Appreciation — Oct 2025
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_thales.jpg', 'Thales Group — Letter of Appreciation, Feb 2025')">
+        <img class="proof-thumb" src="proof_thales.jpg" alt="Thales Letter of Appreciation" />
+        <div class="proof-label">
+          <strong>Thales Group</strong>
+          Letter of Appreciation — Feb 2025
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_certeu.jpg', 'CERT-EU — Hall of Fame')">
+        <img class="proof-thumb" src="proof_certeu.jpg" alt="CERT-EU Hall of Fame" />
+        <div class="proof-label">
+          <strong>CERT-EU</strong>
+          Hall of Fame — Mar 2025
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_bayer.jpg', 'Bayer — Coordinated Vulnerability Disclosure Hall of Fame, Jun 2024')">
+        <img class="proof-thumb" src="proof_bayer.jpg" alt="Bayer Hall of Fame" />
+        <div class="proof-label">
+          <strong>Bayer</strong>
+          CVD Hall of Fame — Jun 2024
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_indmoney.jpg', 'INDmoney — Bug Bounty Certificate of Appreciation')">
+        <img class="proof-thumb" src="proof_indmoney.jpg" alt="INDmoney Bug Bounty Certificate" />
+        <div class="proof-label">
+          <strong>INDmoney</strong>
+          Bug Bounty Certificate
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_embl_ebi.jpeg', 'EMBL-EBI — Security Hall of Fame 2025')">
+        <img class="proof-thumb" src="proof_embl_ebi.jpeg" alt="EMBL-EBI Hall of Fame" />
+        <div class="proof-label">
+          <strong>EMBL-EBI</strong>
+          Security Hall of Fame — 2025
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_pirelli.jpg', 'Pirelli — Responsible Disclosure Reward')">
+        <img class="proof-thumb" src="proof_pirelli.jpg" alt="Pirelli disclosure reward" />
+        <div class="proof-label">
+          <strong>Pirelli</strong>
+          Responsible Disclosure Reward
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_cuny.jpg', 'CUNY — Bug Report Acknowledgement')">
+        <img class="proof-thumb" src="proof_cuny.jpg" alt="CUNY acknowledgement" />
+        <div class="proof-label">
+          <strong>CUNY</strong>
+          Vulnerability Acknowledgement
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_california_hof.png', 'State of California VDP — Bugcrowd Hall of Fame')">
+        <img class="proof-thumb" src="proof_california_hof.png" alt="State of California Hall of Fame" />
+        <div class="proof-label">
+          <strong>State of California VDP</strong>
+          Bugcrowd Hall of Fame
+        </div>
+      </div>
+
+      <div class="proof-card" onclick="openLightbox('proof_maryland_hof.png', 'State of Maryland VDP — Bugcrowd Hall of Fame')">
+        <img class="proof-thumb" src="proof_maryland_hof.png" alt="State of Maryland Hall of Fame" />
+        <div class="proof-label">
+          <strong>State of Maryland VDP</strong>
+          Bugcrowd Hall of Fame
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Experience ─────────────────────────────── -->
+<div class="container">
+  <section id="experience">
+    <div class="section-marker">
+      <span class="section-title">Experience</span>
+    </div>
+
+    <div class="exp-list">
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-date">Feb 2025 – Mar 2025</div>
+          <div class="exp-company">Hacktify</div>
+        </div>
+        <div>
+          <div class="exp-role">Penetration Testing Intern</div>
+          <ul class="exp-bullets">
+            <li>Conducted assessments against lab environments simulating real-world web applications and network infrastructure.</li>
+            <li>Identified OWASP Top 10 vulnerabilities — XSS, SQLi, CSRF, IDOR, Broken Authentication — with reproduction steps and remediation guidance.</li>
+            <li>Tested API endpoints for improper authorization, rate limiting bypass, and excessive data exposure.</li>
+            <li>Delivered structured vulnerability reports with risk ratings, proof-of-concept steps, and actionable fixes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-date">Nov 2024 – Dec 2024</div>
+          <div class="exp-company">Vulncure Ltd.</div>
+        </div>
+        <div>
+          <div class="exp-role">Penetration Testing Intern</div>
+          <ul class="exp-bullets">
+            <li>Performed web application security assessments — request interception, manipulation, and fuzzing using Burp Suite.</li>
+            <li>Tested for client-side and server-side vulnerabilities including XSS, SQL Injection, and security misconfigurations.</li>
+            <li>Documented findings with reproduction steps, attack scenarios, and remediation aligned with industry standards.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Skills ─────────────────────────────────── -->
+<div class="container">
+  <section id="skills">
+    <div class="section-marker">
+      <span class="section-title">Skills &amp; Tooling</span>
+    </div>
+
+    <div class="skills-grid">
+      <div>
+        <div class="skill-group-title">Testing &amp; Recon</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Burp Suite</span>
+          <span class="skill-tag">Nuclei</span>
+          <span class="skill-tag">NMAP</span>
+          <span class="skill-tag">Subfinder</span>
+          <span class="skill-tag">httpx</span>
+          <span class="skill-tag">ffuf</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-title">Vulnerability Classes</div>
+        <div class="skill-tags">
+          <span class="skill-tag">XSS</span>
+          <span class="skill-tag">SQL Injection</span>
+          <span class="skill-tag">IDOR</span>
+          <span class="skill-tag">CSRF</span>
+          <span class="skill-tag">SSRF</span>
+          <span class="skill-tag">Broken Auth</span>
+          <span class="skill-tag">API misconfig</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-title">Platforms</div>
+        <div class="skill-tags">
+          <span class="skill-tag">TryHackMe</span>
+          <span class="skill-tag">HackTheBox</span>
+          <span class="skill-tag">Bugcrowd</span>
+          <span class="skill-tag">CTF competitions</span>
+          <span class="skill-tag">Linux</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="skill-group-title">Reporting</div>
+        <div class="skill-tags">
+          <span class="skill-tag">CVSS scoring</span>
+          <span class="skill-tag">PoC writeups</span>
+          <span class="skill-tag">Remediation docs</span>
+          <span class="skill-tag">Responsible disclosure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Certifications ─────────────────────────── -->
+<div class="container">
+  <section id="certifications">
+    <div class="section-marker">
+      <span class="section-title">Certifications</span>
+    </div>
+
+    <div class="cert-list">
+      <div class="cert-item" style="border-color: #2A4060;">
+        <div class="cert-badge" style="background: transparent; border: 1px solid var(--accent); color: var(--accent);">WIP</div>
+        <div>
+          <div class="cert-name">Offensive Security Certified Professional (OSCP)</div>
+          <div class="cert-issuer">Offensive Security — in preparation</div>
+        </div>
+      </div>
+
+      <div class="cert-item">
+        <div class="cert-badge">CAP</div>
+        <div>
+          <div class="cert-name">Certified AppSec Practitioner</div>
+          <div class="cert-issuer">The SecOps Group</div>
+        </div>
+      </div>
+
+      <div class="cert-item">
+        <div class="cert-badge">CNSP</div>
+        <div>
+          <div class="cert-name">Certified Network Security Practitioner</div>
+          <div class="cert-issuer">The SecOps Group</div>
+        </div>
+      </div>
+
+      <div class="cert-item">
+        <div class="cert-badge">JPT</div>
+        <div>
+          <div class="cert-name">Junior Penetration Tester</div>
+          <div class="cert-issuer">TryHackMe</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Education ──────────────────────────────── -->
+<div class="container">
+  <section id="education">
+    <div class="section-marker">
+      <span class="section-title">Education</span>
+    </div>
+
+    <div>
+      <div class="edu-item">
+        <div class="edu-degree">B.Tech — Cybersecurity &amp; Data Science</div>
+        <div class="edu-school">Lakshmi Narain College of Technology, Bhopal</div>
+        <div class="edu-year">2023 – 2027 (expected)</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-degree">Higher Secondary — PCM with Computer Science</div>
+        <div class="edu-school">CBSE</div>
+        <div class="edu-year">2022 – 2023</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Open To ────────────────────────────────── -->
+<div class="container">
+  <section id="open-to" style="padding-bottom: 56px;">
+    <div class="section-marker">
+      <span class="section-title">Open To</span>
+    </div>
+    <div class="about-text">
+      <p>
+        Available for full-time roles from mid-2027. Primarily interested in client-facing penetration testing (web, API, network), red team support positions, and product security roles at companies with serious attack surfaces. Open to remote or Bhopal/Delhi/Bangalore/Pune-based positions.
+      </p>
+      <p>
+        Also available for part-time security consulting, scoped VAPT engagements, and responsible disclosure collaboration prior to graduation. Reach out at <a href="mailto:imaakarsh21@gmail.com" style="color: var(--accent); text-decoration: none;">imaakarsh21@gmail.com</a>.
+      </p>
+    </div>
+  </section>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ── Footer ─────────────────────────────────── -->
+<div class="container" id="contact">
+  <footer>
+    <p class="footer-line">
+      Aakarsh Mishra &mdash; Security Researcher &mdash; Bhopal, IN &mdash;
+      <a href="mailto:imaakarsh21@gmail.com">imaakarsh21@gmail.com</a> &mdash;
+      <a href="https://linkedin.com/in/aakarshmishra" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+  function openLightbox(src, caption) {
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-caption').textContent = caption;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
